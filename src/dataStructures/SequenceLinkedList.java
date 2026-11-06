@@ -10,7 +10,7 @@ import dataStructures.exceptions.*;
  *
  */
 abstract class SequenceLinkedList<E> extends LinkedList<E> implements List<E>{
-       /**
+    /**
      * Constructor of an empty singly linked list.
      * head and tail are initialized as null.
      * currentSize is initialized as 0.
@@ -83,7 +83,14 @@ abstract class SequenceLinkedList<E> extends LinkedList<E> implements List<E>{
      */
     public int indexOf(E element) {
         //TODO: Left as an exercise.
-        return 0;
+        LinkedNode<E> node = head;
+        for(int i = 0; i < currentSize; i++){
+            if(node.getElement().equals(element)){
+                return i;
+            }
+            node = node.getNext();
+        }
+        return List.NOT_FOUND;
     }
 
     /**
@@ -100,7 +107,7 @@ abstract class SequenceLinkedList<E> extends LinkedList<E> implements List<E>{
      */
     public abstract void addLast(E element) ;
 
-     /**
+    /**
      * Inserts the specified element at the specified position in the list.
      * Range of valid positions: 0, ..., size().
      * If the specified position is 0, add corresponds to addFirst.
@@ -139,6 +146,7 @@ abstract class SequenceLinkedList<E> extends LinkedList<E> implements List<E>{
         LinkedNode<E> prevNode = this.getNode(position - 1);
         return new pairNode<>(prevNode,prevNode.getNext());
     }
+
     /**
      * Removes and returns the element at the first position in the list.
      *
@@ -202,5 +210,6 @@ abstract class SequenceLinkedList<E> extends LinkedList<E> implements List<E>{
 
     void addElem(E element){
         //TODO: Left as an exercise.
+        addLast(element);
     }
 }

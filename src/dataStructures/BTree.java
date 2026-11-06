@@ -8,7 +8,7 @@ package dataStructures;
 abstract class BTree<E> extends LinkedTree<E> {
 
     public BTree(){
-      super();
+        super();
     }
 
     /**
@@ -26,8 +26,11 @@ abstract class BTree<E> extends LinkedTree<E> {
      */
     BTNode<E> furtherLeftElement() {
         //TODO: Left as an exercise.
-        return null
-    };
+        if(isEmpty()){
+            return null;
+        }
+        return ((BTNode<E>)root).furtherLeftElement();
+    }
 
     /**
      * Return the further right node of the tree
@@ -35,7 +38,10 @@ abstract class BTree<E> extends LinkedTree<E> {
      */
     BTNode<E> furtherRightElement() {
         //TODO: Left as an exercise.
-        return null;
+        if(isEmpty()){
+            return null;
+        }
+        return ((BTNode<E>) root).furtherRightElement();
     }
 
 }

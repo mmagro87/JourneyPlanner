@@ -19,5 +19,55 @@ class QueueInArray<E> implements Queue<E> {
         this.capacity=capacity;
     }
 
+    /**
+     * Returns true iff the queue contains no elements.
+     *
+     * @return
+     */
+    @Override
+    public boolean isEmpty() {
+        return elements.isEmpty();
+    }
+
+    /**
+     * Returns the number of elements in the queue.
+     *
+     * @return
+     */
+    @Override
+    public int size() {
+        return elements.size();
+    }
+
+    /**
+     * Inserts the specified element at the rear of the queue.
+     *
+     * @param element
+     */
+    @Override
+    public void enqueue(E element) {
+        elements.addLast(element);
+    }
+
+    /**
+     * Returns the element at the front of the queue.
+     *
+     * @return
+     */
+    @Override
+    public E peek() {
+        return elements.getFirst();
+    }
+
+    /**
+     * Removes and returns the element at the front of the queue.
+     *
+     * @return
+     */
+    @Override
+    public E dequeue() {
+        return elements.removeFirst();
+    }
+
     //TODO: Left as an exercise.
 }

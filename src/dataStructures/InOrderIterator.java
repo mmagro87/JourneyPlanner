@@ -48,15 +48,26 @@ public class InOrderIterator<E> implements Iterator<E> {
     public E next() {
         if (!hasNext())
             throw new NoSuchElementException();
-        E elem=next.getElement();
+        E elem = next.getElement();
         advance();
         return elem;
     }
 
     private void advance() {
         //TODO: Left as an exercise.
+        if(next.getRightChild() != null) {
+            next = ((BTNode<E>) next.getRightChild()).furtherLeftElement();
+        }
+        else {
+            BTNode<E> child = next;
+            BTNode<E> parent = (BTNode<E>) next.getParent();
+            while(parent != null && parent.getRightChild() == child) {
+                child = parent;
+                parent = (BTNode<E>) parent.getParent();
+            }
+            next = parent;
+        }
     }
-
 
     /**
      * Restarts the iteration.
@@ -64,8 +75,8 @@ public class InOrderIterator<E> implements Iterator<E> {
      */
     public void rewind() {
         if (root==null)
-            next=null;
+            next = null;
         else
-            next=root.furtherLeftElement();
+            next = root.furtherLeftElement();
     }
 }

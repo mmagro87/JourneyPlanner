@@ -31,9 +31,11 @@ public class FilterIterator<E> implements Iterator<E> {
      */
     public FilterIterator(Iterator<E> it, Predicate<E> criterion) {
         //TODO: Left as an exercise.
-        
+        iterator = it;
+        this.filter = criterion;
+        advanceNext();
     }
-    
+
     /**
      * Returns true if next would return an element
      *
@@ -49,13 +51,33 @@ public class FilterIterator<E> implements Iterator<E> {
      * @throws NoSuchElementException - if call is made without verifying pre-condition
      */
     public E next() {
-        //TODO: Left as an exercise.   
+        //TODO: Left as an exercise.
+        if (!hasNext()){
+            throw new NoSuchElementException();
+        }
+        E element = nextToReturn;
+        advanceNext();
+        return element;
     }
+
     /**
      * Restarts the iteration.
      * After rewind, if the iteration is not empty, next will return the first element.
      */
     public void rewind() {
-        //TODO: Left as an exercise.   
+        //TODO: Left as an exercise.
+        iterator.rewind();
+        advanceNext();
+
+    }
+
+    private void advanceNext() {
+        nextToReturn = null;
+        while (nextToReturn == null && iterator.hasNext()) {
+            E element = iterator.next();
+            if(filter.check(element)) {
+                nextToReturn = element;
+            }
+        }
     }
 }

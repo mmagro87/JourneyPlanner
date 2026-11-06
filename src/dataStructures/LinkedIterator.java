@@ -11,6 +11,8 @@ import dataStructures.exceptions.NoSuchElementException;
  */
 
 class LinkedIterator<E>  implements Iterator<E> {
+    //TODO: Left as an exercise.
+
     /**
      * First node of the list.
      */
@@ -29,5 +31,39 @@ class LinkedIterator<E>  implements Iterator<E> {
         nextToReturn=first;
     }
 
-    //TODO: Left as an exercise.
+    /**
+     * Returns true if next would return an element
+     * rather than throwing an exception.
+     *
+     * @return true iff the iteration has more elements
+     */
+    @Override
+    public boolean hasNext() {
+        return  nextToReturn != null;
+    }
+
+    /**
+     * Returns the next element in the iteration.
+     *
+     * @return the next element in the iteration
+     * @throws NoSuchElementException - if call is made without verifying pre-condition
+     */
+    @Override
+    public E next() throws NoSuchElementException {
+        if(!hasNext()) {
+            throw new NoSuchElementException();
+        }
+        E element = nextToReturn.getElement();
+        nextToReturn = nextToReturn.getNext();
+        return element;
+    }
+
+    /**
+     * Restarts the iteration.
+     * After rewind, if the iteration is not empty, next will return the first element.
+     */
+    @Override
+    public void rewind() {
+        nextToReturn = first;
+    }
 }

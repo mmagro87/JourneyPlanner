@@ -1,4 +1,9 @@
 package dataStructures;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 /**
  * Closed Hash Table
  * @author AED  Team
@@ -18,7 +23,7 @@ public class ClosedHashTable<K,V> extends HashTable<K,V> {
 
     // The array of entries.
     private transient Entry<K,V>[] table;
-    
+
 
     /**
      * Constructors
@@ -44,11 +49,18 @@ public class ClosedHashTable<K,V> extends HashTable<K,V> {
         return aux;
     }
 
+    //USADO PARA CALCUÇAR A POSIÇÃO DA TABELA
     //Methods for handling collisions. Only one of them should be used!
     // Returns the hash value of the specified key.
     int hash( K key, int i ){
         return Math.abs( key.hashCode() + i) % table.length;
     }
+
+    //USADO PARA QUANDO ADICIONAMOS(POR EXEMPLO), USAR O HASH, OBTEMOS A POSIÇÃO E VAMOS VER SE
+    //ESSA POSIÇÃO ESTÁ OCUPADA OU NÃO
+    //SE NÃO ESTIVER, ENTÃO ADICIONAMOS
+    //SE ESTIVER, PASSAMOS PARA A PRÓXIMA(E VEMOS SE ESTÁ OCUPADA...)
+    //SE ESTIVER DEL(REMOVED) AVANÇAMOS TAMBÉM
     /**
      * Linear Proving
      * @param key to search
@@ -56,10 +68,22 @@ public class ClosedHashTable<K,V> extends HashTable<K,V> {
      */
     int searchLinearProving(K key) {
         //TODO: Left as an exercise.
+        for(int i = 0; i < table.length; i++){
+            int index = hash(key, i);
+            Entry<K,V> entry = table[index];
+
+            if( entry == null ){
+                return NOT_FOUND;
+            }
+
+            if(entry != REMOVED_CELL && entry.key().equals(key)){
+                return index;
+            }
+        }
         return NOT_FOUND; // all cells were covered, the element was not found
     }
 
-    
+
     /**
      * If there is an entry in the dictionary whose key is the specified key,
      * returns its value; otherwise, returns null.
@@ -71,7 +95,14 @@ public class ClosedHashTable<K,V> extends HashTable<K,V> {
     @Override
     public V get(K key) {
         //TODO: Left as an exercise.
-        return null;
+        int index = searchLinearProving(key);
+        if(index == NOT_FOUND){
+            return null;
+        }
+        else{
+            Entry<K,V> entry = table[index];
+            return entry.value();
+        }
     }
 
     /**
@@ -86,16 +117,41 @@ public class ClosedHashTable<K,V> extends HashTable<K,V> {
      */
     @Override
     public V put(K key, V value) {
+        //TODO: Left as an exercise.
+        int index = searchLinearProving(key);
+
+        if (index != NOT_FOUND) {
+            V oldValue = table[index].value();
+            table[index] = new Entry<>(key, value);
+            return oldValue;
+        }
         if (isFull())
             rehash();
-        //TODO: Left as an exercise.
+
+        int i = 0;
+        int position = hash(key, i);
+        while(table[position] != null && table[position] != REMOVED_CELL){
+            i++;
+            position = hash(key, i);
+        }
+        table[position] = new Entry<>(key, value);
+        currentSize++;
         return null;
     }
 
-    
+
     private void rehash() {
         //TODO: Left as an exercise.
-        
+        Entry<K, V>[] oldTable = table;
+        table = createTable(oldTable.length);
+        currentSize = 0;
+
+        for (int i = 0; i < oldTable.length; i++) {
+            Entry<K, V> entry = oldTable[i];
+            if (entry != REMOVED_CELL && entry != null) {
+                put(entry.key(), entry.value());
+            }
+        }
     }
 
     /**
@@ -107,10 +163,18 @@ public class ClosedHashTable<K,V> extends HashTable<K,V> {
      * @return previous value associated with the key,
      * or null if the dictionary does not an entry with that key
      */
+    @SuppressWarnings("unchecked")
     @Override
     public V remove(K key) {
         //TODO: Left as an exercise.
-        return null;
+        int index = searchLinearProving(key);
+        if(index == NOT_FOUND){
+            return null;
+        }
+        V oldValue = table[index].value();
+        table[index] = (Entry<K, V>) REMOVED_CELL;
+        currentSize--;
+        return oldValue;
     }
 
     /**
@@ -127,10 +191,12 @@ public class ClosedHashTable<K,V> extends HashTable<K,V> {
     void writeData(ObjectOutputStream oos)
             throws IOException {
         //TODO: Left as an exercise.
+        oos.defaultWriteObject(); // write the normal attributes
     }
 
     void readData(ObjectInputStream ios)
             throws IOException, ClassNotFoundException {
         //TODO: Left as an exercise.
+        ios.defaultReadObject(); // read the normal attributes
     }
 }
